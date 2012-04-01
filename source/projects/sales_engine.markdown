@@ -63,9 +63,11 @@ Your code needs to be organized as follows:
 Your code should be installable as a gem.
 
 * You will need to have a Gem specification file in the root of the project named sales_engine.gemspec.
-* The gemspec gile must include both author names, must ensure that all needed files are included, and any external dependencies are declared.
-* Include your pairs' GitHub handles in the gem name inside the gemspec. So, for Jeff and Matt the gem name would be "sales_engine-jcasimir_mattyoho".
+* The gemspec file must include both author names, must ensure that all needed files are included, and any external dependencies are declared.
 * Do *not* push your gem out to rubygems.org
+
+#### NOTE:
+**Head's up!** This is a last-minute change from previous requirements. **Do not** include your pairs' GitHub handles in the gem name inside the gemspec. Just name it "sales_engine". (But still **avoid** pushing it to RubyGems.org, please. ;-)
 
 Reference [this article by Yehuda Katz](http://yehudakatz.com/2010/04/02/using-gemspecs-as-intended/) as a starting point for familiarizing yourself with gemspec files.
 
@@ -145,47 +147,48 @@ For your `Merchant`, `Invoice`, `Item`, and `Customer` classes you need to build
 * `.most_items(x)` returns the top `x` merchant instances ranked by total number of items sold
 * `.revenue(date)` returns the total revenue for that date across all merchants
 * `#revenue` returns the total revenue for that merchant across all transactions
-* `#revenue(date)` returns the total revenue that merchant for a specific date
-* `#favorite_customer` returns the `Customer` who has conducted the most transactions
+* `#revenue(date)` returns the total revenue for that merchant for a specific invoice date
+* `#favorite_customer` returns the `Customer` who has conducted the most successful transactions
 * `#customers_with_pending_invoices` returns a collection of `Customer` instances which have pending (unpaid) invoices
 
 _NOTE_: Failed charges should never be counted in revenue totals or statistics.
 
-_NOTE_: All revenues should be reported as a `BigDecimcal` object with two decimal places.
+_NOTE_: All revenues should be reported as a `BigDecimal` object with two decimal places.
 
 ##### `Item`
 
 * `.most_revenue(x)` returns the top `x` item instances ranked by total revenue generated
 * `.most_items(x)` returns the top `x` item instances ranked by total number sold
-* `#best_day` returns the date with the most sales for the given item
+* `#best_day` returns the date with the most sales for the given item using the invoice date
 
 ##### `Customer`
 
 * `#transactions` returns an array of `Transaction` instances associated with the customer
 * `#invoices` returns an array of `Invoice` instances associated with the customer
-* `#favorite_merchant` returns an instance of `Merchant` where the customer has conducted the most transactions
+* `#favorite_merchant` returns an instance of `Merchant` where the customer has conducted the most successful transactions
 
 ##### `Invoice` - Creating New Invoices & Related Objects
 
 Given a hash of inputs, you can create new invoices on the fly using this syntax:
 
 ```
-invoice = Invoice.create(:customer_id => customer, :merchant_id => merchant, :status => "shipped", :items => [item1, item2, item3], :transaction => transaction)
+invoice = Invoice.create(:customer => customer, :merchant => merchant, :status => "shipped", 
+                         :items => [item1, item2, item3])
 ```
 
 Assuming that `customer`, `merchant`, and `item1`/`item2`/`item3` are instances of their respective classes.
 
+You should determine the quantity bought for each item by how many times the item is in the `:items` array.
+So, for `:items => [item1, item1, item2]`, the quantity bought will be 2 for `item1` and 1 for `item2`.
+
 Then, on such an invoice you can call:
 
 ```ruby
-invoice.charge(:credit_card_number => "4444333322221111", :credit_card_expiration => "10/13", :result => "success")
+invoice.charge(:credit_card_number => "4444333322221111",
+               :credit_card_expiration => "10/13", :result => "success")
 ```
 
 The objects created through this process would then affect calculations, finds, etc.
-
-##### Outputting Data
-
-You have to dump the data out to CSVs.
 
 ### Extensions
 
@@ -219,10 +222,6 @@ Add these four methods to `Customer`, qualifying as one extension:
 * `.most_items` returns the `Customer` who has purchased the most items by quantity
 * `.most_revenue` returns the `Customer` who has generated the most total revenue
 
-##### Pending
-
-As we begin work on the project, we'll cook up one more challenging extension.
-
 ### Evaluation Criteria
 
 This project will be peer assessed using automated tests and the rubric below. Automated tests will be available no later than 11:59PM, Monday, March 26th.
@@ -245,18 +244,19 @@ This project will be peer assessed using automated tests and the rubric below. A
   * 2: Source code uses mixed style, with two to five style breaks
   * 1: Source code is generally messy with five to ten issues
   * 0: Source code is unacceptable, containing more than style issues
-4. Performance
-  * 3: Fastest runtime performance among all projects
-  * 2: Positions 2 through 4
-  * 1: Positions 5 through 8
-  * 0: Positions 9 through 12
-5. Effort
-  * 5: Program fulfills all Base Expectations and four Extensions
+5. Live Hungry
+  * 5: Program fulfills all Base Expectations and three Extensions
   * 4: Program fulfills all Base Expectations and two Extensions
   * 3: Program fulfills all Base Expectations
   * 2: Program fulfills Base Expectations except for one or two features.
   * 1: Program fulfills many Base Expectations, but more than two features.
   * 0: Program does not fulfill any of the Base Expectations
+6. Recognize Others
+  * Each team may award a total of two points to any person or split among two persons as a "thank you" for exceptional help or support.
+
+#### Performance
+
+We decided that the performance grading was not effective. Instead, we're going to have an optional, bonus "Performance Olympics" next week. More details to follow.
 
 ### Resources
 
@@ -275,4 +275,4 @@ Start with these data files to build up your relationships:
 
 These data sets contain records which represent failed or cancelled transactions.
 
-_forthcoming_
+This data set is included in the evaluation harness.

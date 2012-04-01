@@ -25,13 +25,14 @@ Run `bundle`, then start up your server.
 
 ### Generate a Decorator
 
-We'll create a decorator to wrap the `Article` model. Draper gives you a handy generator:
+We'll create a decorator to wrap the `Article` model. Draper gives you a handy generators:
 
 ```plain
-  rails generate draper:decorator Article
+  rails generate draper:install
+  rails generate draper:decorator article
 ```
 
-It will create the folder `app/decorators/` and the file `app/decorators/article_decorator.rb`. Open the file and you'll find the frame of a `ArticleDecorator` class.
+It will create the folders `app/decorators/`, `spec/decorators/`and the files `app/decorators/article_decorator.rb`, `spec/decorators/article_decorator_spec.rb`. Open the file and you'll find the frame of a `ArticleDecorator` class.
 
 *Restart* your server so the new folder is added to the load path.
 
@@ -336,7 +337,7 @@ Beyond that, it would be great to scope the JSON based on the current user. Sinc
   * When the user is an admin, show them the values specified by `ADMIN_ATTRIBUTES`
   * When the user is not an admin, show them only the values specified by `PUBLIC_ATTRIBUTES`
 
-If you want to play more with marshalling, what would it be like to create decendents of your `ArticleDecorator` like `ArticleDecoratorXML` and `ArticleDecoratorJSON`? What functionality could you add which would allow the user to stay in the "duck typing" mindset, calling the same method on an instance of any of the three decorators but getting back HTML, XML, or JSON?
+If you want to play more with marshalling, what would it be like to create descendents of your `ArticleDecorator` like `ArticleDecoratorXML` and `ArticleDecoratorJSON`? What functionality could you add which would allow the user to stay in the "duck typing" mindset, calling the same method on an instance of any of the three decorators but getting back HTML, XML, or JSON?
 
 ### Moving Forward with Decorators
 
