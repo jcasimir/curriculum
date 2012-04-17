@@ -114,13 +114,23 @@ Each page has:
 * a layout
 * attached authorization roles
 
-##### Published Status
+##### Body Text Markup
+
+The body should offer a select box of processor options including:
+
+* HTML (plain)
+* Markdown
+* Textile
+
+##### Published At
 
 If the `published_at` is now or in the past, the page should show up on the public site. If it's `nil` or in the future, the page should not be accessible.
 
 #### Layouts
 
 Layouts are used to wrap content, similar to layouts in a Rails application. 
+
+They can contain HTML content, can utilize snippets, and should have a marker (maybe `yield`) where the page content will be output.
 
 #### Snippets
 
@@ -196,9 +206,16 @@ Those assets can then be referenced from inside the page. They also have a uniqu
 
 When images are uploaded the system can create resized versions of configurable dimensions in the background.
 
-#### 3
+#### Layouts
 
-#### 4
+Improve the layout functionality so that:
+
+1. Layouts can be nested in other layouts
+2. Layouts can be chosed based on media type sniffing. So you might create a `blog` layout that gets used for normal requests, but `blog_mobile` that gets used for mobile requests.
+3. Layouts trickle down from the parent. So there is some default setting like `"From Parent"` which gets the layout of the parent or the author can choose another option.
+4. Parents can set the "Default Child Layout." Imagine on the root page I'm using the blog index I'm using a layout named `blog_index`, I could choose that each child automatically defaults to the `blog_article`.
+
+#### Extension 4
 
 ### Evaluation Criteria
 
