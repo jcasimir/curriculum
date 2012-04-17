@@ -19,12 +19,14 @@ In this project you'll use Ruby on Rails to build a content management system.
 
 Please consider the requirements below non-exhaustive guidelines for building a content management system. If you know something should be done but it isn't listed below, do it.
 
-### Restrictions
+### Restrictions & Outside Code
 
 Project implementation may *not* use:
 
 * RadiantCMS, RefineryCMS, or any other pre-fab CMS system
 * Jekyll or derivitives
+
+You *may* choose to use a templating language like `radius` or `liquid` if you choose.
 
 ### Base Expectations
 
@@ -68,35 +70,61 @@ As an authenticated Administrator, I can:
 
 ### Permissions / Authorization
 
-( Here's how the permissions model is going to work )
+This project needs to use a role-based access control model. 
 
-( Groups are assigned to a page and it trickles down through the hierarchy )
+Imagine we have an `about-us` page on the site. It is connected to the roles `trusted-authors` and `corporate`.
+
+If a user is a member of the `corporate` group, they can edit or delete the page and add child pages. 
+
+If a user is a member of the `trusted-authors` group, they can do the same.
+
+If a user is a member of the `admin` group, they can do the same because this group has global permissions.
+
+If a user is not a member of any of those groups, they can see that the page exists in the hierarchy but cannot modify it.
+
+Lastly, the permissions "trickle down." Say the the `about-us` page is nested under the `history` page. Any group which has permissions to work with `history` would also have permission to work with `about-us`.
 
 ### Creating Content
 
+There are several different types of content you need to handle:
+
 #### Pages
 
-( Pages have a title, body, slug )
+Pages are structured in a hierarchy. For example:
+
+```
+Root
+  - About Us
+  - Contact
+  - Blog
+    - 2012
+      - Woohoo blog post
+      - This year is going to be awesome
+    - 2011
+      - End of the year wrapup
+```
+
+Each page has:
+
+* a parent (except the special Root page)
+* a name
+* a body
+* `created_at` and `updated_at` timestamps
+* a `published_at` timestamp
+* a layout
+* attached authorization roles
+
+##### Published Status
+
+If the `published_at` is now or in the past, the page should show up on the public site. If it's `nil` or in the future, the page should not be accessible.
 
 #### Layouts
 
-( Layouts wrap content )
-
-( Layouts can be nested inside other layouts )
+Layouts are used to wrap content, similar to layouts in a Rails application. 
 
 #### Snippets
 
-( Snippets )
-
-#### Redirects
-
-( Redirects match specific paths )
-
-( Extension: redirects match flexible paths with wildcards, etc)
-
-#### Assets
-
-( Assets can be uploaded )
+Snippets are template fragments which get rendered inside other pages. They can include content and reference other snippets.
 
 ### Data Validity
 
@@ -122,11 +150,51 @@ Any attempt to create/modify a record with invalid attributes should return the 
 
 ### Example Data
 
+### Response Times
+
+Response time and caching are critically imporant. Your CMS should make significant use of:
+
+* data caching
+* fragment caching
+* page caching
+* query consolidation
+* database optimizations (query count, using indicies, join)
+
 ### Extensions
 
-#### 1
+#### Redirects
 
-#### 2
+A redirect intercepts an incoming request and redirects it to a page on the site or an external URL.
+
+Imagine that we've changed the structure of our blog. We want to capture requests coming in to the old address pattern and send them to the new URLs. Here is how we could create a redirect:
+
+##### Matcher
+
+The matcher could use a format similar to Rails like this:
+
+```
+/posts/:id
+```
+
+Then any requests for `/posts/5` of `/posts/26` would match this redirect and put the `5` or `26` into an `id` variable.
+
+##### Target
+
+Then the target can reference the same variables:
+
+```
+/blog/articles/:id
+```
+
+So `/posts/5` would redirect them to `/blog/articles/5`.
+
+#### Assets
+
+A page can have one or more attached assets. 
+
+Those assets can then be referenced from inside the page. They also have a unique URL which can be referenced from other pages.
+
+When images are uploaded the system can create resized versions of configurable dimensions in the background.
 
 #### 3
 
