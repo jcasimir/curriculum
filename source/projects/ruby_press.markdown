@@ -1,6 +1,6 @@
 ---
 layout: page
-title: RPress
+title: RubyPress
 ---
 
 In this project you'll use Ruby on Rails to build a content management system.
